@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BETP Project Locations – Botswana</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1rem;
+    }
+    .topbar {
+      width: 100%; max-width: 960px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+    .topbar-title h1 { font-size: 26px; font-weight: 700; color: #111; letter-spacing: 0.04em; }
+    .topbar-title p { font-size: 13px; color: #777; margin-top: 3px; }
+    .flag { width: 80px; border-radius: 4px; box-shadow: 0 1px 6px rgba(0,0,0,0.18); }
+    .card {
+      background: #fff; border-radius: 16px; border: 1px solid #e4e4e4;
+      padding: 1.25rem; width: 100%; max-width: 960px;
+    }
+    #map { width: 100%; height: 580px; border-radius: 10px; border: 1px solid #e4e4e4; }
+    .hint { text-align: center; font-size: 12px; color: #aaa; margin-top: 0.5rem; }
+    .legend-wrap {
+      margin-top: 1rem; border-top: 1px solid #f0f0f0; padding-top: 1rem;
+      display: flex; gap: 1.5rem; flex-wrap: wrap;
+    }
+    .legend-group { display: flex; flex-direction: column; gap: 5px; min-width: 170px; }
+    .legend-group-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #aaa; margin-bottom: 2px; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #444; }
+    .legend-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+    footer { margin-top: 1.25rem; font-size: 11px; color: #bbb; text-align: center; }
+
+    .leaflet-popup-content-wrapper {
+      border-radius: 12px !important; box-shadow: 0 4px 20px rgba(0,0,0,0.12) !important;
+      border: 1px solid #e4e4e4; padding: 0 !important;
+    }
+    .leaflet-popup-content { margin: 0 !important; width: 250px !important; }
+    .leaflet-popup-tip-container { display: none; }
+    .pi { padding: 14px 16px; }
+    .pi-sector {
+      font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;
+      border-radius: 4px; padding: 2px 7px; margin-bottom: 7px; display: inline-block;
+    }
+    .sect-agriculture   { background: #E8F5E9; color: #2E7D32; }
+    .sect-energy        { background: #FFF3E0; color: #E65100; }
+    .sect-manufacturing { background: #EDE7F6; color: #4527A0; }
+    .sect-mining        { background: #EFEBE9; color: #4E342E; }
+    .sect-tourism       { background: #E3F2FD; color: #0D47A1; }
+    .pname { font-size: 13px; font-weight: 600; color: #111; margin: 0 0 8px; line-height: 1.35; }
+    .prow { display: flex; gap: 6px; font-size: 11px; margin: 3px 0; line-height: 1.4; }
+    .plabel { min-width: 90px; color: #bbb; flex-shrink: 0; }
+    .pval { color: #555; }
+    .pcost { font-weight: 700; color: #185FA5; }
+    .pdesc { margin-top: 10px; padding-top: 10px; border-top: 1px solid #f0f0f0; font-size: 11px; color: #666; line-height: 1.55; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-title">
+      <h1>BETP</h1>
+      <p>Investment Project Locations – Botswana</p>
+    </div>
+    <svg class="flag" viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg">
+      <rect width="900" height="600" fill="#75AADB"/>
+      <rect y="216" width="900" height="168" fill="#fff"/>
+      <rect y="234" width="900" height="132" fill="#000"/>
+    </svg>
+  </div>
+
+  <div class="card">
+    <div id="map"></div>
+    <p class="hint">Click any pin to explore the project &middot; Scroll to zoom</p>
+    <div class="legend-wrap">
+      <div class="legend-group">
+        <div class="legend-group-title">Agriculture</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2E7D32"></div>Tutume District Livestock Farming</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2E7D32"></div>Smart Veg Tech Farming</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2E7D32"></div>Boralelo Regional Beef Hub</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2E7D32"></div>Halal Canned Meat</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2E7D32"></div>Primary Slaughter Facility – Lobatse</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2E7D32"></div>Industrial Hemp &amp; Cannabis</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2E7D32"></div>Production of Roses for Export</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2E7D32"></div>Nutraceuticals &amp; Functional Foods</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#2E7D32"></div>Botswana Dairy Hub</div>
+      </div>
+      <div class="legend-group">
+        <div class="legend-group-title">Energy</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#E65100"></div>LeanoTsatsi Community Solar</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#E65100"></div>Marang Green 50MW Solar Farm</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#E65100"></div>Fortune Springs Solar</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#E65100"></div>Sekaname Coal Bed Methane</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#E65100"></div>Navabi LPG</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#E65100"></div>Biodiesel Botswana</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#E65100"></div>Ambleside Waste To Energy</div>
+      </div>
+      <div class="legend-group">
+        <div class="legend-group-title">Manufacturing</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4527A0"></div>Afritech Oil &amp; Gas Distribution</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4527A0"></div>Ulti-Pack Petroleum Storage</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4527A0"></div>IV Fluids Manufacturing</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4527A0"></div>NuCarbon Pyrolysis Plant</div>
+        <div class="legend-group-title" style="margin-top:8px">Tourism</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#0D47A1"></div>The City Safari</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#0D47A1"></div>Xinii Resort</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#0D47A1"></div>Opulent Film City</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#0D47A1"></div>Kaphar Water Park &amp; Resort</div>
+      </div>
+      <div class="legend-group">
+        <div class="legend-group-title">Mining</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4E342E"></div>Iron Extraction &amp; Beneficiation</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4E342E"></div>K.Hill Battery Grade Manganese</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4E342E"></div>Green Beneficiation – BCL Mine</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4E342E"></div>Khoemacau Copper Mine Expansion</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#4E342E"></div>Letlhakane Uranium Project</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>Botswana Economic Transformation Programme (BETP) &middot; Investment Project Tracker</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    var sectorColors = {
+      agriculture:   '#2E7D32',
+      energy:        '#E65100',
+      manufacturing: '#4527A0',
+      mining:        '#4E342E',
+      tourism:       '#0D47A1'
+    };
+
+    var projects = [
+      // Agriculture
+      { name:'Tutume District Livestock Farming & Meat Processing Facility', lat:-20.529703, lng:26.063736, sector:'agriculture', district:'Central', cost:'USD 10 Mil', desc:'The partnership between Lamworld Technologies and Tutume District Council (TUDC) is critical to ensuring a reliable meat supply in Tutume, as this is the district\'s only existing abattoir.' },
+      { name:'Smart Veg Tech Farming', lat:-23.800000, lng:25.300000, sector:'agriculture', district:'Kweneng', cost:'USD 6.6 Mil', desc:'To reduce Botswana\'s heavy reliance on imported fresh produce like tomatoes and peppers from South Africa, the project by Dilution Enterprises provides retailers with a reliable alternative source of high-quality, locally grown produce.' },
+      { name:'Boralelo Regional Beef Hub', lat:-24.649309, lng:25.429256, sector:'agriculture', district:'Kweneng', cost:'USD 9.7 Mil', desc:'Bonvita Herbal Solutions aims to meet the rising demand for quality meat locally, regionally, and internationally by supplying both beef and mutton.' },
+      { name:'Halal Canned Meat', lat:-24.999632, lng:25.573019, sector:'agriculture', district:'Southern', cost:'USD 6.2 Mil', desc:'To meet growing global demand for halal canned meat, the project positions itself as a premium supplier, strengthened by blockchain-powered traceability and authentication.' },
+      { name:'Primary Slaughter Facilities in Lobatse', lat:-25.220024, lng:25.672857, sector:'agriculture', district:'Southern', cost:'USD 124.1 Mil', desc:'The proposed BMC Primary Slaughter Facility in Lobatse is essential to modernize Botswana\'s beef sector, safeguard its premium exports and rural livelihoods, and ensure compliance with evolving international standards.' },
+      { name:'Development of Botswana Industrial Hemp and Medicinal Cannabis Industry', lat:-24.563331, lng:25.981078, sector:'agriculture', district:'North East', cost:'USD 40.5 Mil', desc:'To establish a new revenue stream based on research, development, and technology for the entire hemp value chain. It moves beyond traditional farming and processing to create a spectrum of jobs.' },
+      { name:'Production of Roses for Export', lat:-25.266035, lng:25.711347, sector:'agriculture', district:'Southern', cost:'USD 26.4 Mil', desc:'To diversify exports beyond beef and minerals, and position the country in the lucrative global cut-rose market, particularly in Europe and the United States.' },
+      { name:'Nutraceuticals and Functional Foods Production', lat:-26.051222, lng:22.419722, sector:'agriculture', district:'Southern', cost:'USD 5.8 Mil', desc:'To modernise and transform indigenous medicinal plants into an alternative to mainstream medicine for the people of Botswana, while empowering rural communities through job creation, upskilling, and integration into commercial markets.' },
+      { name:'Botswana Dairy Value Addition & Processing Hub', lat:-21.982378, lng:27.804894, sector:'agriculture', district:'Central', cost:'USD 2.2 Mil', desc:'This project aims to establish a fully operational dairy processing company capable of producing milk, yogurt, butter, and madila, with a capacity to process 600,000 litres of milk per month, fulfilling domestic demand and reducing reliance on dairy imports.' },
+      // Energy
+      { name:'Kgalagadi Resources – LeanoTsatsi Community Solar Development', lat:-23.145115, lng:26.601319, sector:'energy', district:'South East', cost:'USD 351.1 Mil', desc:'The initiative will commence with a 5MW utility-scale solar plant in Tobela Village as the pilot site, then scaled across more than 100 communities nationwide, ultimately delivering over 500MW of community-owned solar generation capacity.' },
+      { name:'Marang Green – 50 MW Solar Farm & Battery Storage', lat:-21.123298, lng:27.488065, sector:'energy', district:'North East', cost:'USD 62.1 Mil', desc:'The project involves the development, design, construction, financing, ownership and operations of a 50MWAC solar PV and Battery Energy Storage System (ESS) plant located near Francistown.' },
+      { name:'Fortune Springs – Solar For Agribusiness', lat:-20.627426, lng:27.445445, sector:'energy', district:'North East', cost:'USD 2.7 Mil', desc:'The 3 MW Solar Farm in the Masunga Cluster is a modular initiative to empower agricultural communities, using the power for agro-processing and Battery Energy Storage System (BESS) to stabilize the cold chain.' },
+      { name:'Sekaname Coal Bed Methane', lat:-22.094084, lng:26.574135, sector:'energy', district:'Central', cost:'USD 598.6 Mil', desc:'Botswana CBM resource is a valuable natural resource that is still largely undeveloped. Natural gas in its various forms is a much sought-after commodity in today\'s climate-change driven energy landscape.' },
+      { name:'Navabi LPG Manufacturing & Distributors', lat:-23.128893, lng:26.959494, sector:'energy', district:'Central', cost:'USD 166.8 Mil', desc:'Botswana imports 100% of its LPG via road tankers from South Africa. Navabi Energy aims to create import cost savings of up to 15% via bulk procurement through a 30,000 MT LPG storage terminal, also reducing road haulage cost per MT.' },
+      { name:'Biodiesel Botswana Biodiesel Manufacturing Plant', lat:-24.407566, lng:26.081092, sector:'energy', district:'South East', cost:'USD 13.7 Mil', desc:'The facility will process used vegetable oil and animal tallow as feedstock incorporating the latest in automation and sustainable manufacturing practice to produce 50,000L of B10 per day, and 1,000L of glycerol (byproduct) per day.' },
+      { name:'Ambleside Conversion of Waste To Energy', lat:-24.483709, lng:25.711542, sector:'energy', district:'Gaborone', cost:'USD 9.2 Mil', desc:'The project aims to develop a scalable Waste2Energy facility at Gamodubu Landfill that converts municipal and organic waste into renewable energy, primarily electricity, while fostering environmental sustainability and economic empowerment.' },
+      // Manufacturing
+      { name:'Afritech Oil and Gas Petroleum Products Distribution', lat:-22.537641, lng:27.116403, sector:'manufacturing', district:'Central', cost:'USD 46.6 Mil', desc:'Strengthening Botswana\'s energy security by providing 30 million litres (ML) of petroleum storage ensuring supply reliability, regional trade, and economic diversification.' },
+      { name:'Ulti-Pack Petroleum Storage, Supply & Distribution', lat:-23.746798, lng:26.469450, sector:'manufacturing', district:'Central', cost:'USD 489.1 Mil', desc:'Strengthening Botswana\'s energy security by combining 200ML petroleum storage with 100–200MW solar power, ensuring supply reliability, regional trade, and economic diversification.' },
+      { name:'IV Fluids Manufacturing Project', lat:-25.223322, lng:25.698431, sector:'manufacturing', district:'Southern', cost:'USD 1.4 Mil', desc:'This project aims to establish Botswana\'s first specialized IV fluid manufacturing plant in Lobatse, using Blow-Fill-Seal technology to produce 2.16 million bottles monthly for import reduction.' },
+      { name:'NuCarbon Containerized Pyrolysis Plant', lat:-25.190322, lng:25.688325, sector:'manufacturing', district:'Southern', cost:'USD 1.8 Mil', desc:'This project aims to establish a large-scale pyrolysis facility and manufacture Containerized Pyrolysis Plants (CPPs), processing waste organic materials into biochar, bio-oil, and synthesis gas to reduce energy imports and support diversification.' },
+      // Mining
+      { name:'Iron Extraction and Beneficiation', lat:-21.945000, lng:27.860400, sector:'mining', district:'Central', cost:'USD 36.5 Mil', desc:'This project aims to diversify the economy by establishing local iron ore extraction and beneficiation to produce sponge iron and steel. The coal-based process will yield 96,000 tonnes of sponge iron annually, revitalizing the Selebi-Phikwe industrial base.' },
+      { name:'K.Hill Battery Grade Manganese Development Plant', lat:-24.190000, lng:25.350000, sector:'mining', district:'Southern', cost:'USD 278.2 Mil', desc:'The K.Hill project addresses the strategic demand for battery-grade manganese, forecast to grow fivefold over the next decade, while positioning Botswana as a leading ethical supplier.' },
+      { name:'Green Beneficiation of Entire BCL Mine Tailings and Slag Dam', lat:-21.960000, lng:27.870000, sector:'mining', district:'Central', cost:'USD 284.7 Mil', desc:'Beneficiation of 100% of existing material to contribute at least BWP 200 Billion to the GDP over the next 10 years. Clean up of a massive ongoing environmental problem. Rejuvenation of Selebi-Phikwe.' },
+      { name:'Khoemacau Copper Mine Expansion Project', lat:-20.634470, lng:23.197600, sector:'mining', district:'North West', cost:'USD 814.9 Mil', desc:'The Khoemacau expansion secures Botswana\'s role in the global energy transition by scaling copper output vital for electrification and renewable technologies.' },
+      { name:'Letlhakane Uranium Project', lat:-21.414900, lng:25.592600, sector:'mining', district:'Letlhakane', cost:'USD 481.8 Mil', desc:'The Letlhakane Uranium Project diversifies Botswana\'s mining base by unlocking 114 Mlbs of uranium to supply the global clean energy transition and create long-term economic value.' },
+      // Tourism
+      { name:'The City Safari', lat:-24.628500, lng:25.952600, sector:'tourism', district:'Gaborone', cost:'USD 73.1 Mil', desc:'The City Safari project seeks to transform the reserve into a world-class model of conservation, eco-tourism, and community development — attracting investment and new tourism models while preserving ecological integrity and public benefit.' },
+      { name:'Xinii Resort', lat:-19.197127, lng:23.987736, sector:'tourism', district:'North West – Mababe', cost:'USD 15.3 Mil', desc:'Botswana\'s reliance on northern wildlife tourism limits growth potential. Xinii Resort in Mababe diversifies offerings with luxury, wellness, and regenerative tourism to attract high-spending, longer-stay international visitors.' },
+      { name:'Opulent Film City', lat:-20.006924, lng:23.636861, sector:'tourism', district:'North West – Maun area', cost:'USD 729.7 Mil', desc:'Maun\'s strategic location and unique landscapes create an opportunity to establish a Film City that attracts international productions, enhances entertainment offerings, boosts tourism, creates jobs, and diversifies Botswana\'s economy.' },
+      { name:'Kaphar Water Park and Resort', lat:-18.438056, lng:21.882417, sector:'tourism', district:'North West – Samochima', cost:'USD 29.2 Mil', desc:'The water park and resort will attract domestic and international visitors, extend stays in the Okavango Panhandle, and create a flagship attraction that stimulates surrounding businesses and community initiatives.' }
+    ];
+
+    function makeIcon(sector) {
+      var color = sectorColors[sector];
+      return L.divIcon({
+        className: '',
+        html: '<div style="width:13px;height:13px;border-radius:50%;background:' + color + ';border:2.5px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,0.35)"></div>',
+        iconSize: [13, 13], iconAnchor: [6, 6], popupAnchor: [0, -10]
+      });
+    }
+
+    function popupHTML(p) {
+      return '<div class="pi">'
+        + '<span class="pi-sector sect-' + p.sector + '">' + p.sector + '</span>'
+        + '<p class="pname">' + p.name + '</p>'
+        + '<div class="prow"><span class="plabel">District</span><span class="pval">' + p.district + '</span></div>'
+        + '<div class="prow"><span class="plabel">Cost Est. 2030</span><span class="pval pcost">' + p.cost + '</span></div>'
+        + '<div class="pdesc">' + p.desc + '</div>'
+        + '</div>';
+    }
+
+    var map = L.map('map', { center: [-22.5, 24.5], zoom: 6, scrollWheelZoom: true });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 18
+    }).addTo(map);
+
+    projects.forEach(function(p) {
+      L.marker([p.lat, p.lng], { icon: makeIcon(p.sector) })
+        .addTo(map)
+        .bindPopup(popupHTML(p), { maxWidth: 290, minWidth: 250 });
+    });
+  </script>
+</body>
+</html>
